@@ -1,38 +1,44 @@
 import { useState } from 'react'
-import {Hello, ButtonA, NewAge, Separator} from "./components/hello"
+import {} from "./components/hello"
 
 function App() {
-  const [index, setIndex] = useState(0)
-  const [person, setPerson] = useState(0)
+  const [clicksObj, setClicksObj] = useState({left: 0, right: 0})
+  const [allClicks, setAllClicks] = useState([])
+  const [total, setTotal] = useState(0)
 
-  const onClickA = () => {
-    setIndex(index + 1)
+  const handleLeftClick = () => {
+    setAllClicks(allClicks.concat("L"));
+    console.log("Left before:", clicksObj.left)
+    const updatedLeft = {
+        ...clicksObj,
+        left: clicksObj.left + 1,
+      }
+    setClicksObj(updatedLeft);
+    console.log("Left after:", clicksObj.left)
+    setTotal(updatedLeft.left + clicksObj.right)
   }
 
-  const onClickB = () => {
-    setPerson(person + 1)
+  const handleRightClick = () => {
+    setAllClicks(allClicks.concat("R"));
+    setClicksObj(
+      {
+        ...clicksObj,
+        right: clicksObj.right + 1
+      }
+    );
+    setTotal(clicksObj.left + clicksObj.right)
   }
 
-  const people = [
-    {name: "Viktar", age: 40},
-    {name: "Kiryl", age: 8}
-  ]
-  const name = people[person].name
-  const age = people[person].age
 
   return (
     <>
-      <Hello name={people[0].name} age={people[0].age}/>
-      <Separator />
-
-      <ButtonA func={onClickA} name={"+1 year"}/>
-      <NewAge name={people[0].name} age={people[0].age + index}/>
-      <Separator />
-
-      <ButtonA func={onClickB} name={"next persone"}/>
-      <Hello name={name} age={age}/>
-      <Separator />
+      <button onClick={handleLeftClick}>{clicksObj.left} Left</button>
+      <button onClick={handleRightClick}>Right {clicksObj.right}</button>
+      <p>Click History: {allClicks.join(",")}</p>
+      <p>Total Click num: {total}</p>
+      <p>Total Click num: {allClicks.length}</p> 
     </>
+    
   )
 }
 
