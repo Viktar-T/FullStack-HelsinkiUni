@@ -1,38 +1,32 @@
 import { useState } from 'react'
-import {Hello, ButtonA, NewAge, Separator} from "./components/hello"
+import {Button, Display} from "./components/course"
 
-function App() {
-  const [index, setIndex] = useState(0)
-  const [person, setPerson] = useState(0)
+const App = () => {
+  const [counter, setCounter] = useState(0)
+  console.log('rendering with counter value', counter)
 
-  const onClickA = () => {
-    setIndex(index + 1)
+  const increaseByOne = () => {
+    console.log('increasing, value before', counter)
+    setCounter(counter + 1)
   }
 
-  const onClickB = () => {
-    setPerson(person + 1)
+  const decreaseByOne = () => { 
+    console.log('decreasing, value before', counter)
+    setCounter(counter - 1)
   }
 
-  const people = [
-    {name: "Viktar", age: 40},
-    {name: "Kiryl", age: 8}
-  ]
-  const name = people[person].name
-  const age = people[person].age
+  const setToZero = () => {
+    console.log('resetting to zero, value before', counter)
+    setCounter(0)
+  }
 
   return (
-    <>
-      <Hello name={people[0].name} age={people[0].age}/>
-      <Separator />
-
-      <ButtonA func={onClickA} name={"+1 year"}/>
-      <NewAge name={people[0].name} age={people[0].age + index}/>
-      <Separator />
-
-      <ButtonA func={onClickB} name={"next persone"}/>
-      <Hello name={name} age={age}/>
-      <Separator />
-    </>
+    <div>
+      <Display counter={counter} />
+      <Button handleClick={increaseByOne} text="plus" />
+      <Button handleClick={setToZero} text="zero" />
+      <Button handleClick={decreaseByOne} text="minus" />
+    </div>
   )
 }
 
