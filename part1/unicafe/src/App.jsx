@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-
+const texts = ["good", "neutral", "bad"]
 
 
 const Button = ({clickHandler, text}) => {
@@ -24,35 +24,50 @@ const App = () => {
   )
 
   const handleClick = (text) => () => {
-    console.log(stat)
-    setStat(...stat, stat.good + 1)
+    
     if (text === "good") {
-      setStat(...stat, stat.good + 1)
-    } 
+      setStat({...stat, good: stat.good + 1})
+    } else if (text === "neutral") {
+      setStat({...stat, neutral: stat.neutral + 1})
+    } else if (text === "bad") {
+      setStat({...stat, bad: stat.bad + 1})
+    }
+    console.log(stat)
   }
 
-  const handGood = () => {
+  const handleGood = () => {
     setGood(good + 1)
   }
 
-  const handNeutral = () => {
+  const handleNeutral = () => {
     setNeutral(neutral + 1)
   }
 
-  const handBad = () => {
+  const handleBad = () => {
     setBad(bad + 1)
   }
 
   return (
     <>
       <h1>give feedback</h1>
-      <Button clickHandler={handGood} text={"good"} />
-      <Button clickHandler={handNeutral} text={"neutral"} />
-      <Button clickHandler={handBad} text={"bad"} />
+      <Button clickHandler={handleGood} text={"good"} />
+      <Button clickHandler={handleNeutral} text={"neutral"} />
+      <Button clickHandler={handleBad} text={"bad"} />
       <h1>statistics</h1>
       <p>Good {good}</p>
       <p>Neutral {neutral}</p>
       <p>Bad {bad}</p>  
+      <p>---------------</p>
+      <h1>give feedback</h1>
+      <Button clickHandler={handleClick(texts[0])} text={texts[0]} />
+      <Button clickHandler={handleClick(texts[1])} text={texts[1]} />
+      <Button clickHandler={handleClick(texts[2])} text={texts[2]} />
+      <h1>statistics</h1>
+      <p>Good {stat.good}</p>
+      <p>Neural {stat.neutral}</p>
+      <p>Bad {stat.bad}</p>
+      {/* <p>Neutral {neutral}</p>
+      <p>Bad {bad}</p> */}
     </>
   )
 }
