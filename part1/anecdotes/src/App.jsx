@@ -1,5 +1,29 @@
 import { useState } from 'react'
 
+const Button = ({func, text}) => {
+  return <button onClick={func} >{text}</button>
+}
+
+const Day = ({anecdote, maxVotes}) => {
+  return (
+    <>
+      <h1>Anecdote of the day</h1>
+      <p>{anecdote}</p>
+      <p>has {maxVotes} votes</p>
+    </>
+  )
+}
+
+const MostVotes = ({bestAnecdote, maxVotes}) => {
+  return (
+    <>
+      <h1>Anecdote with most votes</h1>
+      <p>{bestAnecdote}</p>
+      <p>has {maxVotes} votes</p>
+    </>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -13,12 +37,35 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
+  const [maxIndNum, setMaxIndNum] = useState({
+    maxNum: 0,
+    maxInd: 0
+  })
+
+  const handleClick = () => {
+    const rndm = Math.round(Math.random() * (anecdotes.length - 1))
+    setSelected(rndm)
+    console.log(rndm)
+  }
+
+  const handleVoteClick = () => {
+    const copyVotes = [...votes];
+    copyVotes[selected] += 1;
+    setVotes(copyVotes);
+    console.log(copyVotes, selected);
+    const maxNumber = Math.max(...copyVotes);
+    const maxIndex = copyVotes.indexOf(maxNumber);
+    setMaxIndNum({maxNum: maxNumber, maxInd: maxIndex})
+  }
 
 
   return (
     <div>
-      {anecdotes[1]}
-      <button /* onClick={} */>next anecdote</button>
+      <Day anecdote={anecdotes[selected]} maxVotes={votes[selected]}/>
+      <Button func={handleVoteClick} text={"vote"} />
+      <Button func={handleClick} text={"next anecdote"} />
+      <MostVotes bestAnecdote={anecdotes[maxIndNum.maxInd]} maxVotes={maxIndNum.maxNum}/>     
     </div>
   )
 }
