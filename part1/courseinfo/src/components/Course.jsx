@@ -19,12 +19,20 @@ const Header = ({name}) => {
       </ul>
     )
   }
+
+  const Total = ({parts}) => {
+    const total = parts.reduce((sum, elem) => sum + elem.exercises, 0);
+    return (
+        <p>total of {total} exercises</p>
+    ) 
+  }
   
   const Course = ({course}) => {
     return (
       <>
         <Header name={course.name} />
         <Content parts={course.parts} />
+        <Total parts={course.parts} />        
       </>
       
     )
