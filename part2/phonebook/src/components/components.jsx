@@ -1,8 +1,6 @@
-const Phonebook = ({addPerson, newName, newPhone, insertName, insertPhone}) => {
+const PersonForm = ({addPerson, newName, newPhone, insertName, insertPhone}) => {
     return (
         <>
-            
-
             <form onSubmit={addPerson}>
             <div>
                 name: <input value={newName} onChange={insertName}/>
@@ -10,25 +8,37 @@ const Phonebook = ({addPerson, newName, newPhone, insertName, insertPhone}) => {
             <div>
                 phone: <input value={newPhone} onChange={insertPhone}/>
             </div>
-
             <div>
                 <button type="submit">add</button>
             </div>
-
             </form>
         </>
     )
 }
 
-const Numbers = ({persons}) => {
+const Filter = ({filterName, filterPersons}) => {
+    return (
+        <>
+            <label>filter shown with</label>
+            <input value={filterName} onChange={filterPersons} />
+        </>
+    )
+    
+}
+
+const Persons = ({filteredPersons}) => {
     return (
         <>
             <h2>Numbers</h2>
             <ul>
-                {persons.map((person) => <li key={person.id}>{person.name}: {person.phone}</li>)}
+                {
+                filteredPersons.map((person) => <li key={person.id}>
+                    {person.name}: {person.number}
+                    </li>)
+                }
             </ul>
         </>
     )
 }
 
-export {Phonebook, Numbers}
+export {PersonForm, Persons, Filter}

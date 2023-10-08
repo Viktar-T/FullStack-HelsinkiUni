@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Phonebook, Numbers} from './components/components'
+import { PersonForm, Persons, Filter/*  */} from './components/components'
 
 
 const App = () => {
@@ -30,9 +30,11 @@ const App = () => {
     const newPersoneObj = {
       id: persons.length + 1, 
       name: newName, 
-      phone: newPhone
+      number: newPhone
     }
-    setPersons(persons.concat(newPersoneObj))
+    const newPersonArray = persons.concat(newPersoneObj)
+    setPersons(newPersonArray)
+    setFilteredPersons(newPersonArray)
     setNewName("")
     setNewPhone("")
   }
@@ -46,29 +48,24 @@ const App = () => {
   }
 
   const filterPersons = (event) => {
-    
     const tValue = event.target.value
-    const filtered = persons.reduce(
-      (resArray, person) => {
-      if (person.name.includes(tValue)) {
-        resArray.concat(person)
-      }
-    }, []
-    )
-    setFilteredPersons(filtered)
+    setFilterName(tValue)
+    const tValueLowerCase = tValue.toLowerCase()
+    const filtered = persons.filter((person) => person.name.toLowerCase().includes(tValueLowerCase))
+    setFilteredPersons(filtered)    
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <label>filter shown with</label>
-      <input value={filterName} onChange={filterPersons} />
-
+      <Filter filterName={filterName} filterPersons={filterPersons}/>
+      
       <h2>add a new</h2>
-      <Phonebook addPerson={addPerson} newName={newName} newPhone={newPhone} 
-      insertName={insertName} insertPhone={insertPhone} />
+      <PersonForm addPerson={addPerson} newName={newName} newPhone={newPhone} 
+      insertName={insertName} insertPhone={insertPhone} 
+      />
 
-      <Numbers persons={persons} />      
+      <Persons filteredPersons={filteredPersons} />   
     </div>
   )
 }
