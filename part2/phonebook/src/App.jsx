@@ -1,18 +1,27 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { PersonForm, Persons, Filter/*  */} from './components/components'
+import axios from "axios"
 
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newPhone, setNewPhone] = useState('')
   const [filterName, setFilterName] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then(response => {
+        const data = response.data
+        setPersons(data)
+        setFilteredPersons(data)
+        console.log("truger useEffect", data)
+      })
+  }, [])
+  console.log("persons: ", persons)
+  
 
   const checkExist = (name) => {
     const names = persons.map((person) => person.name)
@@ -65,6 +74,7 @@ const App = () => {
       insertName={insertName} insertPhone={insertPhone} 
       />
 
+      <h2>Numbers</h2>
       <Persons filteredPersons={filteredPersons} />   
     </div>
   )
