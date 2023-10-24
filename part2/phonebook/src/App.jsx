@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { PersonForm, Persons, Filter, Button} from './components/components'
+import { PersonForm, Persons, Filter, Button, SuccessAddNotification} from './components/components'
 import personService from "./services/persons"
 
 
@@ -9,6 +9,7 @@ const App = () => {
   const [newPhone, setNewPhone] = useState('')
   const [filterName, setFilterName] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
+  const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
     personService.getAll()
@@ -43,7 +44,9 @@ const App = () => {
     setFilteredPersons(newPersonArray)
     setNewName("")
     setNewPhone("")
-    console.log("newPerson was created: ", response)
+    /* console.log("newPerson was created: ", response) */
+    setSuccessMessage(`Added ${newName}`)
+    setTimeout(() => setSuccessMessage(null), 1500)
   })
   }
 
@@ -55,6 +58,8 @@ const App = () => {
       setFilteredPersons(changedPersonArray)
       setNewName("")
       setNewPhone("")
+      setSuccessMessage(`Phone number of "${newName}" was changed to "${newPhone}"`)
+      setTimeout(() => setSuccessMessage(null), 1500)
     })
 
   }
@@ -101,6 +106,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <SuccessAddNotification message={successMessage}/>
       <Filter filterName={filterName} filterPersons={filterPersons}/>
       
       <h2>add a new</h2>
