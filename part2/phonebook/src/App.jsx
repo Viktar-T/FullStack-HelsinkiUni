@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { PersonForm, Persons, Filter/*  */} from './components/components'
-import axios from "axios"
+import { PersonForm, Persons, Filter, Button} from './components/components'
+import personService from "./services/persons"
 
 
 const App = () => {
@@ -11,41 +11,63 @@ const App = () => {
   const [filteredPersons, setFilteredPersons] = useState(persons)
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then(response => {
-        const data = response.data
-        setPersons(data)
-        setFilteredPersons(data)
-        console.log("truger useEffect", data)
-      })
-  }, [])
-  console.log("persons: ", persons)
-  
+    personService.getAll()
+    .then(initialData => {
+      console.log(initialData)
+      setPersons(initialData)
+      setFilteredPersons(initialData)
+    })
+  }, []) 
 
   const checkExist = (name) => {
-    const names = persons.map((person) => person.name)
-    if (names.includes(name)) {
-      alert(`${name} is already added to phonebook`)
-      return true
+    /* const names = persons.map((person) => person.name) */
+    const person = persons.find(p => p.name === name)
+    /* console.log("---exist---", exist) */
+    if (person) {
+      /* alert(`${name} is already added to phonebook`) */
+      return person     
     }
     return false
   }
 
-  const addPerson = (event) => {
-    event.preventDefault()
-    if (checkExist(newName)) {return;}
-
-    const newPersoneObj = {
-      id: persons.length + 1, 
-      name: newName, 
-      number: newPhone
-    }
-    const newPersonArray = persons.concat(newPersoneObj)
+  const addPerson = () => {  
+    const newPersonObj = {
+    id: persons.length + 1, 
+    name: newName, 
+    number: newPhone
+  }
+  const newPersonArray = persons.concat(newPersonObj)
+  
+  personService.create(newPersonObj).then(response => {
     setPersons(newPersonArray)
     setFilteredPersons(newPersonArray)
     setNewName("")
     setNewPhone("")
+    console.log("newPerson was created: ", response)
+  })
+  }
+
+  const updatePerson = (person) => {
+    const changedPerson = {...person, "number": newPhone}
+    const changedPersonArray = persons.map(p => p.id === person.id ? changedPerson : p)
+    personService.update(person.id, changedPerson).then(() => {
+      setPersons(changedPersonArray)
+      setFilteredPersons(changedPersonArray)
+      setNewName("")
+      setNewPhone("")
+    })
+
+  }
+
+  const addUpdatePerson = (event) => {
+    event.preventDefault()
+    /* const person = persons.find(p => p.name === newName); */
+    const person = checkExist(newName)
+    if (person) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with new one?`)) {
+        updatePerson(person)        
+      } else {return;}
+    } else {addPerson()}
   }
 
   const insertName = (event) => {
@@ -64,18 +86,30 @@ const App = () => {
     setFilteredPersons(filtered)    
   }
 
+  const delFunc = (id) => {
+    const person = persons.find(p => p.id === id)
+    console.log(person)
+    if (window.confirm(`Delete ${person.name}`)) {
+      personService.del(id).then(() => {
+      const newPersonsList = persons.filter(p => p.id !== id)
+      setPersons(newPersonsList)
+      setFilteredPersons(newPersonsList)
+    })
+  }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter filterName={filterName} filterPersons={filterPersons}/>
       
       <h2>add a new</h2>
-      <PersonForm addPerson={addPerson} newName={newName} newPhone={newPhone} 
+      <PersonForm addPerson={addUpdatePerson} newName={newName} newPhone={newPhone} 
       insertName={insertName} insertPhone={insertPhone} 
       />
 
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons} />   
+      <Persons filteredPersons={filteredPersons} delFunc={delFunc} />
     </div>
   )
 }

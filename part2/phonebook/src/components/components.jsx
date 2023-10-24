@@ -26,13 +26,14 @@ const Filter = ({filterName, filterPersons}) => {
     
 }
 
-const Persons = ({filteredPersons}) => {
+const Persons = ({filteredPersons, delFunc}) => {
     return (
         <>
             <ul>
                 {
                 filteredPersons.map((person) => <li key={person.id}>
-                    {person.name}: {person.number}
+                    {person.name}: {person.number} 
+                    <button onClick={() => delFunc(person.id)}>delete {person.id}</button>
                     </li>)
                 }
             </ul>
@@ -40,4 +41,10 @@ const Persons = ({filteredPersons}) => {
     )
 }
 
-export {PersonForm, Persons, Filter}
+const Button = (func) => {
+    return (
+        <button onClick={func}>delete</button>
+    )
+}
+
+export {PersonForm, Persons, Filter, Button}
