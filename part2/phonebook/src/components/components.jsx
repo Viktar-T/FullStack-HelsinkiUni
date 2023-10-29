@@ -48,20 +48,23 @@ const Button = (func) => {
 }
 
 const SuccessAddNotification = ({message}) => {
-    const styleMessage = {
-        color: "green",
+    const styleMessage = (color) => {
+    return({
+        color: color,
         background: "lightgrey",
         fontSize: 20,
         borderStyle: "solid",
         borderRadius: 5,
         padding: 10,
         marginBottom: 10,
-    }
+    })
+}
 
-    if (message === null) {
+    if (message.text === null) {
         return null
     } else {
-        return <p className="successAddNotific" style={styleMessage}>{message}</p>
+        const color = message.color
+        return <p className="successAddNotific" style={styleMessage(color)}>{message.text}</p>
     }
 }
 

@@ -9,7 +9,7 @@ const App = () => {
   const [newPhone, setNewPhone] = useState('')
   const [filterName, setFilterName] = useState('')
   const [filteredPersons, setFilteredPersons] = useState(persons)
-  const [successMessage, setSuccessMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState({text: null, color: null})
 
   useEffect(() => {
     personService.getAll()
@@ -21,11 +21,8 @@ const App = () => {
   }, []) 
 
   const checkExist = (name) => {
-    /* const names = persons.map((person) => person.name) */
     const person = persons.find(p => p.name === name)
-    /* console.log("---exist---", exist) */
     if (person) {
-      /* alert(`${name} is already added to phonebook`) */
       return person     
     }
     return false
@@ -44,9 +41,11 @@ const App = () => {
     setFilteredPersons(newPersonArray)
     setNewName("")
     setNewPhone("")
-    /* console.log("newPerson was created: ", response) */
-    setSuccessMessage(`Added ${newName}`)
-    setTimeout(() => setSuccessMessage(null), 1500)
+    setSuccessMessage({
+      text: `Added ${newName}`, 
+      color: "green",
+    })
+    setTimeout(() => setSuccessMessage({text: null, color: null}), 3000)
   })
   }
 
@@ -58,8 +57,19 @@ const App = () => {
       setFilteredPersons(changedPersonArray)
       setNewName("")
       setNewPhone("")
-      setSuccessMessage(`Phone number of "${newName}" was changed to "${newPhone}"`)
-      setTimeout(() => setSuccessMessage(null), 1500)
+      setSuccessMessage({
+        text:`Phone number of "${newName}" was changed to "${newPhone}"`,
+        color: "green"
+      })
+      setTimeout(() => setSuccessMessage({text: null, color: null}), 3000)
+    })
+    .catch(error => {
+      console.log("!!! error UPDATE !!!")
+      setSuccessMessage({
+        text: `Information of "${newName}" has already been removed from the server`,
+        color: "red"
+      })
+      setTimeout(() => setSuccessMessage({text: null, color: null}), 3000)
     })
 
   }
@@ -95,10 +105,15 @@ const App = () => {
     const person = persons.find(p => p.id === id)
     console.log(person)
     if (window.confirm(`Delete ${person.name}`)) {
-      personService.del(id).then(() => {
+      personService.del(id)
+      .then(() => {
       const newPersonsList = persons.filter(p => p.id !== id)
       setPersons(newPersonsList)
       setFilteredPersons(newPersonsList)
+    })
+    .catch(error => {
+      console.log("!!! error DEL !!!")
+    
     })
   }
   }
