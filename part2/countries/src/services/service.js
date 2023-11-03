@@ -1,16 +1,16 @@
 import axios from "axios";
 
 const getAll = () => {
+    const request = axios.get('https://studies.cs.helsinki.fi/restcountries/api/all')
     return (
-        axios
-        .get('https://studies.cs.helsinki.fi/restcountries/api/all')
+        request.then(r => r.data)
     )
 }
 
-const getCountry = ({name}) => {
+const getCountry = (name) => {
+    const request = axios.get(`https://studies.cs.helsinki.fi/restcountries/api/name/${name}`)
     return (
-        axios
-        .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${name}`)
+        request.then(r => r.data)
     )
 }
 

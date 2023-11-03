@@ -1,21 +1,51 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios' 
-import {CountriesMessage} from "./components/components"
+import {TooManyMessage, CountriesListMessage, TheCountryMessage} from "./components/components"
+import request from "./services/service"
 
 function App() {
   const [value, setValue] = useState('')
   const [countriesInfo, setCountriesInfo] = useState([])
+  const [countryInfo, setCountryInfo] = useState({})
+  const [firstMessage, setFirstMessage] = useState(true)
+  const [countriesListWithValue, setCountriesListWithValue] = useState([])
+  const [selectedCountry, setSelectedCountry] = useState('')
 
   useEffect(() => {
-    axios
-    .get('https://studies.cs.helsinki.fi/restcountries/api/all')
-    .then(resp => {
-      setCountriesInfo(resp.data)
-    })
+    request.getAll().then(data => setCountriesInfo(data))
   }, [])
 
+
+  useEffect(() => {
+    console.log("----- setCountryInfo(data) ----", "selectedCountry:", selectedCountry)
+    if (selectedCountry) {
+      request.getCountry(selectedCountry).then(data => {
+      setCountryInfo(data)
+    })
+    }    
+  }, [selectedCountry])
+
   const handleChange = (event) => {
-    setValue(event.target.value)   
+    const currentValue = event.target.value
+    setValue(currentValue)
+
+    const countriesList = countriesInfo.map(item => item.name.common)
+    const countriesListWithValue = countriesList.filter(c => c.includes(currentValue))
+
+    if (countriesListWithValue.length > 10) {
+      setFirstMessage(true)
+      setSelectedCountry('')
+      setCountriesListWithValue([])
+      setCountryInfo({})
+    } else if (countriesListWithValue.length > 1) {
+      setFirstMessage(false)
+      setSelectedCountry('')
+      setCountriesListWithValue(countriesListWithValue)
+      setCountryInfo({})
+    } else if (countriesListWithValue.length === 1) {
+      setFirstMessage(false)
+      setSelectedCountry(countriesListWithValue[0]) 
+      setCountriesListWithValue([])           
+    }
   }
 
   return (
@@ -23,7 +53,9 @@ function App() {
       <form>
         find countries <input value={value} onChange={handleChange} />
       </form>
-      <CountriesMessage countriesInfo={countriesInfo} value={value} />
+      <TooManyMessage display={firstMessage} />
+      <CountriesListMessage countriesListWithValue={countriesListWithValue} />
+      <TheCountryMessage countryInfo={countryInfo}/>
     </>
   )
 }
