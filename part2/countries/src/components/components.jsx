@@ -4,24 +4,42 @@ const TooManyMessage = ({display}) => {
   }  
 }
 
-const CountriesListMessage = ({countriesListWithValue}) => {
+const CountriesListMessage = ({countriesListWithValue, handleClick}) => {
   return (
     <ul>
-        {countriesListWithValue.map((c, index) => <li key={index}>{c}</li>)}
+        {countriesListWithValue.map(
+          (c, index) => <li key={index}>
+            {c} <button onClick={() => handleClick(c)}>show</button>
+            </li>
+          )}
     </ul>
   )
 }
 
-const TheCountryMessage = ({countryInfo}) => {
-  console.log("countryInfo1: ", countryInfo)
+const Flag = ({ flag }) => {
+  return (
+    <div>
+      <img src={flag.png} alt={flag.alt} />
+    </div>
+  );
+};
+
+
+const TheCountryMessage = ({countryInfo, weather}) => {
   if (countryInfo.name) {
-    console.log("countryInfo2: ", countryInfo)
     return (
     <>
       <h1>{countryInfo.name.common}</h1>
       <p>capital {countryInfo.capital}</p>
       <p>area {countryInfo.area}</p>
       <h4>languages: </h4>
+      <ul>
+        {Object.entries(countryInfo.languages).map(([key, v]) => <li key={key}>{v}</li>)}
+      </ul>
+      <Flag flag={countryInfo.flags} />
+      <h1>Weather in {countryInfo.capital}</h1>
+      <p>temperature {weather.temp} Celsius</p>
+      <p>wind {weather.wind_speed} m/s</p>
     </>
   )
   }

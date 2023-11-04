@@ -9,6 +9,7 @@ function App() {
   const [firstMessage, setFirstMessage] = useState(true)
   const [countriesListWithValue, setCountriesListWithValue] = useState([])
   const [selectedCountry, setSelectedCountry] = useState('')
+  const [weather, setWeather] = useState({})
 
   useEffect(() => {
     request.getAll().then(data => setCountriesInfo(data))
@@ -16,10 +17,17 @@ function App() {
 
 
   useEffect(() => {
-    console.log("----- setCountryInfo(data) ----", "selectedCountry:", selectedCountry)
     if (selectedCountry) {
       request.getCountry(selectedCountry).then(data => {
       setCountryInfo(data)
+      const lat = data.capitalInfo.latlng[0]
+      const lon = data.capitalInfo.latlng[1]
+      request.getWether(lat, lon).then(resp => {
+        setWeather({
+          "temp": Number(273.15 - resp.current.temp).toFixed(2), 
+          "wind_speed": resp.current.wind_speed
+        })
+      })
     })
     }    
   }, [selectedCountry])
@@ -48,14 +56,18 @@ function App() {
     }
   }
 
+  const handleClick = (c) => {
+    setSelectedCountry(c)
+  }
+
   return (
     <>
       <form>
         find countries <input value={value} onChange={handleChange} />
       </form>
       <TooManyMessage display={firstMessage} />
-      <CountriesListMessage countriesListWithValue={countriesListWithValue} />
-      <TheCountryMessage countryInfo={countryInfo}/>
+      <CountriesListMessage countriesListWithValue={countriesListWithValue} handleClick={handleClick}/>
+      <TheCountryMessage countryInfo={countryInfo} weather={weather} />
     </>
   )
 }
