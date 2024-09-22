@@ -1,18 +1,18 @@
-function OneFunc1 () {
+function OneFunc1 ({name, size}) {
     console.log("hello from function 'oneFunc1' ")
     return (
-      <div>
-        <p>oneFunction1</p>
-      </div>    
+      <>
+        <p>oneFunction1 - name: {name} - size: {size}</p>
+      </>    
     )
   }
 
-  function OneFunc2 () {
+  function OneFunc2 (props) {
     console.log("hello from function 'oneFunc2' ")
     return (
-      <div>
-        <p>OneFunction2</p>
-      </div>    
+      <>
+        <p>OneFunction2 - {props.name}</p>
+      </>    
     )
   }
 

@@ -19,7 +19,7 @@ function Func1 ({name="N", size=10, color="blue"}) {
   const n1 = name + " + constant"
   return (
     <div>
-      <p>Function1 - {n1}</p>
+      <p>Function1 - {n1 + 1000}</p>
       <p>Function1 - {s1}</p>
       <p>Function1 - {color}</p>
     </div>    
@@ -29,20 +29,23 @@ function Func1 ({name="N", size=10, color="blue"}) {
 const App = () => {
   console.log("hello from the main const 'App' ")
   // const now = new Data()
+  const size1 = 300;
+  const size2 = 200;
+  const size3 = 100;
   return (
-    <div>
+    <>
       <p>Hello world, </p>
-      <Portfolio size={300}/>
-      <Portfolio size={200}/>
-      <Portfolio size={100}/>
+      <Portfolio size={size1}/>
+      <Portfolio size={size2}/>
+      <Portfolio size={size3}/>
       <Func1 name={"NAME"} size={100} color={"BLUE"}/>
       <Func1 name={"NAME-2"} size={1000} color={"BLUE-2"}/>
       <h2>---Import from  components/one.jsx----</h2>
-      <OneFunc1 />
-      <OneFunc2 />
+      <OneFunc1 name="props.name in function OneFunc2" size={10}/>
+      <OneFunc2 name={"props.name in function OneFunc2"}/>
       <h2>---Import from  components/two.jsx----</h2>
       <TodoList />
-    </div>
+    </>
     
   )
 }
